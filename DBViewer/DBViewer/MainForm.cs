@@ -62,6 +62,8 @@ namespace DBS
 			txtResults.Refresh();
 
 			DateTime start = DateTime.Now;
+			
+			string connString = cboConnString.Text.Trim();
 			dbUtils.OpenDatabase(connString, ssStatus);
 			foreach (DataRow row in dbUtils.SchemaDataSet.Tables["Tables"].Rows)
 			{
