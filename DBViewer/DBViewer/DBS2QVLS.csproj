@@ -53,7 +53,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="XCrypt">
-      <HintPath>.\XCrypt.dll</HintPath>
+      <HintPath>..\..\..\..\Visual Studio 2015\Projects\XCrypt\XCrypt\bin\Debug\XCrypt.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +146,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FILES03B.ICO" />
+    <Content Include="Options.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />

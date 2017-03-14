@@ -1,0 +1,9 @@
+MapC : Yes
+MapID : Yes
+DateFromDTTM : Yes
+TimeFromDTTM : Yes
+DateFromDATETIME : Yes
+TimeFromDATETIME : Yes
+IncludeNullFields : Yes
+MapName : Map
+ExpandedFieldName : NAME
