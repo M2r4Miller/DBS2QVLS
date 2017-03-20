@@ -15,5 +15,6 @@ namespace DBS
 		public bool IsQVScript { get; set; }
 		public string SearchFor { get; set; }
 		public List<string> TableNames { get; set; }
+		public List<ColumnItem> ColumnNames { get; set; }
 	}
 }

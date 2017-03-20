@@ -20,7 +20,9 @@ namespace DBS
 		DBSearchUtils dbSearch;
 		Options currentOptions = new Options();
 		List<string> tablesList = new List<string>();
-		List<string> filteredList = new List<string>();
+		List<string> filteredTablesList = new List<string>();
+		List<string> columnsList = new List<string>();
+		List<string> filteredColumnsList = new List<string>();
 
 		public MainForm()
 		{
@@ -51,7 +53,13 @@ namespace DBS
 				MessageBox.Show("Enter or select an existing connection string before clicking \"Open\"!", "Open Database Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				return;
 			}
-			//schemaDataSet = new DataSet();
+
+			// Collapse the columns list box
+			splitContainer3.SuspendLayout();
+			splitContainer3.Panel2Collapsed = true;
+			btnShowColumns.Text = ">";
+			splitContainer3.ResumeLayout();
+
 			tablesList.Clear();
 			TablesListBox.DataSource = null;
 			TablesListBox.Refresh();
@@ -62,7 +70,7 @@ namespace DBS
 			txtResults.Refresh();
 
 			DateTime start = DateTime.Now;
-			
+
 			string connString = cboConnString.Text.Trim();
 			dbUtils.OpenDatabase(connString, ssStatus);
 			foreach (DataRow row in dbUtils.SchemaDataSet.Tables["Tables"].Rows)
@@ -114,7 +122,8 @@ namespace DBS
 				IsRecordCount = chkRecordCountsOnly.Checked,
 				IsQVScript = chkBuildQVLoad.Checked,
 				SearchFor = txtSearchString.Text.Trim(),
-				TableNames = new List<string>()
+				TableNames = new List<string>(),
+				ColumnNames = new List<ColumnItem>()
 			};
 
 			// Add selected tables to SearchParams object
@@ -122,6 +131,19 @@ namespace DBS
 			{
 				sp.TableNames.Add(item);
 			}
+			if (!splitContainer3.Panel2Collapsed)
+			{
+				string tableName = string.Empty;
+				foreach (string item in ColumnsListBox.SelectedItems)
+				{
+					if (!item.StartsWith("  "))
+					{
+						tableName = item;
+					}
+					sp.ColumnNames.Add(new ColumnItem { TableName = tableName, ColumnName = item.TrimStart() });
+				}
+			}
+
 			txtResults.Text = sp.IsNull && !sp.IsQVScript ? "Null Columns ..." : "";
 			txtResults.Refresh();
 
@@ -161,21 +183,11 @@ namespace DBS
 			}
 			else
 			{
+				txtResults.Clear();
 				txtResults.Text = txt;
 				txtResults.Refresh();
 			}
 
-		}
-
-		/// <summary>
-		/// Toggles form elements based on Null Search Radio Button state
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void rdoNullSearch_CheckedChanged(object sender, EventArgs e)
-		{
-			txtSearchString.Enabled = !rdoNullSearch.Checked;
-			chkBuildQVLoad.Enabled = rdoNullSearch.Checked;
 		}
 
 		/// <summary>
@@ -187,6 +199,8 @@ namespace DBS
 		{
 			txtSearchString.Enabled = !chkRecordCountsOnly.Checked;
 			rdoStringSearch.Checked = chkRecordCountsOnly.Checked;
+			if (chkRecordCountsOnly.Checked)
+				chkBuildQVLoad.Checked = false;
 		}
 
 		/// <summary>
@@ -196,11 +210,16 @@ namespace DBS
 		/// <param name="e"></param>
 		private void btnSelectAllTables_Click(object sender, EventArgs e)
 		{
+			TablesListBox.SuspendLayout();
+			ColumnsListBox.SuspendLayout();
 			for (int i = 0; i < TablesListBox.Items.Count; i++)
 			{
 				TablesListBox.SetSelected(i, true);
 			}
 			TablesListBox.TopIndex = 0;
+			RefreshColumnList();
+			TablesListBox.ResumeLayout();
+			ColumnsListBox.ResumeLayout();
 		}
 
 		/// <summary>
@@ -297,27 +316,33 @@ namespace DBS
 
 		private void txtFilter_TextChanged(object sender, EventArgs e)
 		{
+			SetTableFilter();
+		}
+
+		private void SetTableFilter()
+		{
 			if (txtFilter.Text.Equals("Filter..."))
 				return;
 
-			filteredList.Clear();
+			filteredTablesList.Clear();
 			TablesListBox.DataSource = null;
 			if (rdoContains.Checked)
 			{
 				var filterQuery = from t in tablesList
 													where t.Contains(txtFilter.Text.Trim())
 													select t;
-				filteredList.AddRange(filterQuery.ToList<string>());
+				filteredTablesList.AddRange(filterQuery.ToList<string>());
 			}
 			else
 			{
 				var filterQuery = from t in tablesList
 													where t.StartsWith(txtFilter.Text.Trim())
 													select t;
-				filteredList.AddRange(filterQuery.ToList<string>());
+				filteredTablesList.AddRange(filterQuery.ToList<string>());
 			}
-			TablesListBox.DataSource = filteredList;
+			TablesListBox.DataSource = filteredTablesList;
 			TablesListBox.Refresh();
+			RefreshColumnList();
 		}
 
 		private void txtFilter_Leave(object sender, EventArgs e)
@@ -327,6 +352,173 @@ namespace DBS
 				txtFilter.Text = "Filter...";
 				txtFilter.Refresh();
 			}
+		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+		private void btnShowColumns_Click(object sender, EventArgs e)
+		{
+			splitContainer3.SuspendLayout();
+			if(splitContainer3.Panel2Collapsed)
+			{
+				btnShowColumns.Text = "<";
+				splitContainer3.Panel2Collapsed = false;
+				toolTip1.SetToolTip(btnShowColumns, "Hide Columns");
+				splitContainer3.SplitterDistance = splitContainer3.Width / 2;
+				LoadColumns();
+			}
+			else
+			{
+				btnShowColumns.Text = ">";
+				splitContainer3.Panel2Collapsed = true;
+				toolTip1.SetToolTip(btnShowColumns, "Show Columns");
+			}
+			splitContainer3.ResumeLayout();
+		}
+
+		private void LoadColumns()
+		{
+			// If no database currently open, don't do anything
+			if (string.IsNullOrEmpty(dbUtils.CurrentDatabase))
+				return;
+			ColumnsListBox.SuspendLayout();
+			columnsList.Clear();
+			ColumnsListBox.DataSource = null;
+			string selectedTables = string.Empty;
+			foreach (string item in TablesListBox.SelectedItems)
+			{
+				selectedTables += item + ",";
+			}
+			var columnQuery = from c in dbUtils.SchemaDataSet.Tables["TableColumns"].AsEnumerable()
+												where selectedTables.Contains(c.Field<string>("TABLE_NAME"))
+												select c;
+
+			columnsList = PopulateTheColumnList(columnQuery);
+			ColumnsListBox.DataSource = columnsList;
+			ColumnsListBox.ResumeLayout();
+		}
+
+		private List<string> PopulateTheColumnList(EnumerableRowCollection<DataRow> columnQuery)
+		{
+			List<string> tempList = new List<string>();
+			string currentTable = string.Empty;
+			foreach (DataRow row in columnQuery)
+			{
+				string tableName = row["TABLE_NAME"].ToString();
+				string columnName = "  " + row["COLUMN_NAME"].ToString();
+				if (!currentTable.Equals(tableName))
+				{
+					tempList.Add(tableName);
+					currentTable = tableName;
+				}
+				tempList.Add(columnName);
+			}
+			return tempList;
+		}
+
+		private void RefreshColumnList()
+		{
+			if (!splitContainer3.Panel2Collapsed)
+			{
+				LoadColumns();
+			}
+		}
+
+		private void TablesListBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			RefreshColumnList();
+		}
+
+		private void txtColumnFilter_TextChanged(object sender, EventArgs e)
+		{
+			SetColumnFilter();
+		}
+
+		private void SetColumnFilter()
+		{
+			if (txtColumnFilter.Text.Equals("Filter..."))
+				return;
+
+			ColumnsListBox.SuspendLayout();
+			filteredColumnsList.Clear();
+			ColumnsListBox.DataSource = null;
+			EnumerableRowCollection<DataRow> filterQuery;
+			if (rdoColumnContains.Checked)
+			{
+				filterQuery = from c in dbUtils.SchemaDataSet.Tables["TableColumns"].AsEnumerable()
+											where c.Field<string>("COLUMN_NAME").Contains(txtColumnFilter.Text.Trim())
+											select c;
+			}
+			else
+			{
+				filterQuery = from c in dbUtils.SchemaDataSet.Tables["TableColumns"].AsEnumerable()
+											where c.Field<string>("COLUMN_NAME").StartsWith(txtColumnFilter.Text.Trim())
+											select c;
+			}
+			filteredColumnsList = PopulateTheColumnList(filterQuery);
+
+			ColumnsListBox.DataSource = filteredColumnsList;
+			ColumnsListBox.ResumeLayout();
+		}
+
+		private void txtColumnFilter_Enter(object sender, EventArgs e)
+		{
+			txtColumnFilter.SelectAll();
+		}
+
+		private void txtColumnFilter_Leave(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(txtColumnFilter.Text))
+			{
+				txtColumnFilter.Text = "Filter...";
+				txtColumnFilter.Refresh();
+			}
+		}
+
+		private void rdoColumnStartsWith_CheckedChanged(object sender, EventArgs e)
+		{
+			SetColumnFilter();
+		}
+
+		private void rdoColumnContains_CheckedChanged(object sender, EventArgs e)
+		{
+			SetColumnFilter();
+		}
+
+		private void rdoStartsWith_CheckedChanged(object sender, EventArgs e)
+		{
+			SetTableFilter();
+		}
+
+		private void rdoContains_CheckedChanged(object sender, EventArgs e)
+		{
+			SetTableFilter();
+		}
+
+		private void rdoNumericSearch_CheckedChanged(object sender, EventArgs e)
+		{
+			if (rdoNumericSearch.Checked)
+				chkBuildQVLoad.Checked = false;
+		}
+
+		private void rdoStringSearch_CheckedChanged(object sender, EventArgs e)
+		{
+			if (rdoStringSearch.Checked)
+				chkBuildQVLoad.Checked = false;
+		}
+
+		/// <summary>
+		/// Toggles form elements based on Null Search Radio Button state
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void rdoNullSearch_CheckedChanged(object sender, EventArgs e)
+		{
+			txtSearchString.Enabled = !rdoNullSearch.Checked;
+			chkBuildQVLoad.Enabled = rdoNullSearch.Checked;
 		}
 	}
 }

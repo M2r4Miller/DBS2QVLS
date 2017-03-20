@@ -44,8 +44,16 @@
 			this.lblColumnName = new System.Windows.Forms.Label();
 			this.lblTableName = new System.Windows.Forms.Label();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+			this.btnShowColumns = new System.Windows.Forms.Button();
 			this.TablesListBox = new System.Windows.Forms.ListBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.rdoContains = new System.Windows.Forms.RadioButton();
+			this.txtFilter = new System.Windows.Forms.TextBox();
+			this.rdoStartsWith = new System.Windows.Forms.RadioButton();
+			this.rdoColumnContains = new System.Windows.Forms.RadioButton();
+			this.rdoColumnStartsWith = new System.Windows.Forms.RadioButton();
+			this.txtColumnFilter = new System.Windows.Forms.TextBox();
+			this.ColumnsListBox = new System.Windows.Forms.ListBox();
 			this.txtResults = new System.Windows.Forms.TextBox();
 			this.ssStatus = new System.Windows.Forms.StatusStrip();
 			this.tsStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -56,13 +64,8 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,9 +74,6 @@
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.txtFilter = new System.Windows.Forms.TextBox();
-			this.rdoStartsWith = new System.Windows.Forms.RadioButton();
-			this.rdoContains = new System.Windows.Forms.RadioButton();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -82,6 +82,10 @@
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+			this.splitContainer3.Panel1.SuspendLayout();
+			this.splitContainer3.Panel2.SuspendLayout();
+			this.splitContainer3.SuspendLayout();
 			this.ssStatus.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -197,6 +201,7 @@
 			this.rdoStringSearch.Text = "String Search";
 			this.toolTip1.SetToolTip(this.rdoStringSearch, "Choose to search for strings (default)");
 			this.rdoStringSearch.UseVisualStyleBackColor = true;
+			this.rdoStringSearch.CheckedChanged += new System.EventHandler(this.rdoStringSearch_CheckedChanged);
 			// 
 			// rdoNumericSearch
 			// 
@@ -208,6 +213,7 @@
 			this.rdoNumericSearch.Text = "Numeric Search";
 			this.toolTip1.SetToolTip(this.rdoNumericSearch, "Choose to search for numeric values");
 			this.rdoNumericSearch.UseVisualStyleBackColor = true;
+			this.rdoNumericSearch.CheckedChanged += new System.EventHandler(this.rdoNumericSearch_CheckedChanged);
 			// 
 			// chkRecordCountsOnly
 			// 
@@ -255,23 +261,57 @@
 			// splitContainer2
 			// 
 			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
 			this.splitContainer2.Name = "splitContainer2";
 			// 
 			// splitContainer2.Panel1
 			// 
-			this.splitContainer2.Panel1.Controls.Add(this.rdoContains);
-			this.splitContainer2.Panel1.Controls.Add(this.rdoStartsWith);
-			this.splitContainer2.Panel1.Controls.Add(this.txtFilter);
-			this.splitContainer2.Panel1.Controls.Add(this.TablesListBox);
-			this.splitContainer2.Panel1.Controls.Add(this.label2);
+			this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
 			// 
 			// splitContainer2.Panel2
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.txtResults);
 			this.splitContainer2.Size = new System.Drawing.Size(778, 332);
-			this.splitContainer2.SplitterDistance = 258;
+			this.splitContainer2.SplitterDistance = 265;
 			this.splitContainer2.TabIndex = 0;
+			// 
+			// splitContainer3
+			// 
+			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer3.Name = "splitContainer3";
+			// 
+			// splitContainer3.Panel1
+			// 
+			this.splitContainer3.Panel1.Controls.Add(this.btnShowColumns);
+			this.splitContainer3.Panel1.Controls.Add(this.TablesListBox);
+			this.splitContainer3.Panel1.Controls.Add(this.rdoContains);
+			this.splitContainer3.Panel1.Controls.Add(this.txtFilter);
+			this.splitContainer3.Panel1.Controls.Add(this.rdoStartsWith);
+			// 
+			// splitContainer3.Panel2
+			// 
+			this.splitContainer3.Panel2.Controls.Add(this.rdoColumnContains);
+			this.splitContainer3.Panel2.Controls.Add(this.rdoColumnStartsWith);
+			this.splitContainer3.Panel2.Controls.Add(this.txtColumnFilter);
+			this.splitContainer3.Panel2.Controls.Add(this.ColumnsListBox);
+			this.splitContainer3.Size = new System.Drawing.Size(265, 332);
+			this.splitContainer3.SplitterDistance = 138;
+			this.splitContainer3.SplitterWidth = 2;
+			this.splitContainer3.TabIndex = 4;
+			// 
+			// btnShowColumns
+			// 
+			this.btnShowColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnShowColumns.Location = new System.Drawing.Point(122, 3);
+			this.btnShowColumns.Name = "btnShowColumns";
+			this.btnShowColumns.Size = new System.Drawing.Size(15, 20);
+			this.btnShowColumns.TabIndex = 4;
+			this.btnShowColumns.Text = "<";
+			this.toolTip1.SetToolTip(this.btnShowColumns, "Show Columns");
+			this.btnShowColumns.UseVisualStyleBackColor = true;
+			this.btnShowColumns.Click += new System.EventHandler(this.btnShowColumns_Click);
 			// 
 			// TablesListBox
 			// 
@@ -279,22 +319,113 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TablesListBox.FormattingEnabled = true;
-			this.TablesListBox.Location = new System.Drawing.Point(0, 24);
+			this.TablesListBox.Location = new System.Drawing.Point(3, 29);
 			this.TablesListBox.Name = "TablesListBox";
 			this.TablesListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.TablesListBox.Size = new System.Drawing.Size(258, 303);
+			this.TablesListBox.Size = new System.Drawing.Size(132, 303);
 			this.TablesListBox.Sorted = true;
 			this.TablesListBox.TabIndex = 3;
 			this.toolTip1.SetToolTip(this.TablesListBox, "Choose one or more tables to search");
+			this.TablesListBox.SelectedIndexChanged += new System.EventHandler(this.TablesListBox_SelectedIndexChanged);
 			// 
-			// label2
+			// rdoContains
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(19, 77);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(101, 13);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "What to search for?";
+			this.rdoContains.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.rdoContains.AutoSize = true;
+			this.rdoContains.Location = new System.Drawing.Point(84, 3);
+			this.rdoContains.Name = "rdoContains";
+			this.rdoContains.Size = new System.Drawing.Size(41, 17);
+			this.rdoContains.TabIndex = 2;
+			this.rdoContains.TabStop = true;
+			this.rdoContains.Text = "Cnt";
+			this.toolTip1.SetToolTip(this.rdoContains, "Contains");
+			this.rdoContains.UseVisualStyleBackColor = true;
+			this.rdoContains.CheckedChanged += new System.EventHandler(this.rdoContains_CheckedChanged);
+			// 
+			// txtFilter
+			// 
+			this.txtFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtFilter.Location = new System.Drawing.Point(3, 0);
+			this.txtFilter.Name = "txtFilter";
+			this.txtFilter.Size = new System.Drawing.Size(36, 20);
+			this.txtFilter.TabIndex = 0;
+			this.txtFilter.Text = "Filter...";
+			this.toolTip1.SetToolTip(this.txtFilter, "Filter the list of tables - remember the Filter is CaSe Sensitive!");
+			this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
+			this.txtFilter.Enter += new System.EventHandler(this.txtFilter_Enter);
+			this.txtFilter.Leave += new System.EventHandler(this.txtFilter_Leave);
+			// 
+			// rdoStartsWith
+			// 
+			this.rdoStartsWith.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.rdoStartsWith.AutoSize = true;
+			this.rdoStartsWith.Checked = true;
+			this.rdoStartsWith.Location = new System.Drawing.Point(44, 3);
+			this.rdoStartsWith.Name = "rdoStartsWith";
+			this.rdoStartsWith.Size = new System.Drawing.Size(43, 17);
+			this.rdoStartsWith.TabIndex = 1;
+			this.rdoStartsWith.TabStop = true;
+			this.rdoStartsWith.Text = "SW";
+			this.toolTip1.SetToolTip(this.rdoStartsWith, "Starts With");
+			this.rdoStartsWith.UseVisualStyleBackColor = true;
+			this.rdoStartsWith.CheckedChanged += new System.EventHandler(this.rdoStartsWith_CheckedChanged);
+			// 
+			// rdoColumnContains
+			// 
+			this.rdoColumnContains.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.rdoColumnContains.Location = new System.Drawing.Point(78, 4);
+			this.rdoColumnContains.Margin = new System.Windows.Forms.Padding(0);
+			this.rdoColumnContains.Name = "rdoColumnContains";
+			this.rdoColumnContains.Size = new System.Drawing.Size(49, 19);
+			this.rdoColumnContains.TabIndex = 4;
+			this.rdoColumnContains.TabStop = true;
+			this.rdoColumnContains.Text = "Cnt";
+			this.toolTip1.SetToolTip(this.rdoColumnContains, "Contains");
+			this.rdoColumnContains.UseVisualStyleBackColor = true;
+			this.rdoColumnContains.CheckedChanged += new System.EventHandler(this.rdoColumnContains_CheckedChanged);
+			// 
+			// rdoColumnStartsWith
+			// 
+			this.rdoColumnStartsWith.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.rdoColumnStartsWith.AutoSize = true;
+			this.rdoColumnStartsWith.Checked = true;
+			this.rdoColumnStartsWith.Location = new System.Drawing.Point(40, 5);
+			this.rdoColumnStartsWith.Name = "rdoColumnStartsWith";
+			this.rdoColumnStartsWith.Size = new System.Drawing.Size(43, 17);
+			this.rdoColumnStartsWith.TabIndex = 4;
+			this.rdoColumnStartsWith.TabStop = true;
+			this.rdoColumnStartsWith.Text = "SW";
+			this.toolTip1.SetToolTip(this.rdoColumnStartsWith, "Starts With");
+			this.rdoColumnStartsWith.UseVisualStyleBackColor = true;
+			this.rdoColumnStartsWith.CheckedChanged += new System.EventHandler(this.rdoColumnStartsWith_CheckedChanged);
+			// 
+			// txtColumnFilter
+			// 
+			this.txtColumnFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtColumnFilter.Location = new System.Drawing.Point(3, 3);
+			this.txtColumnFilter.Name = "txtColumnFilter";
+			this.txtColumnFilter.Size = new System.Drawing.Size(34, 20);
+			this.txtColumnFilter.TabIndex = 5;
+			this.txtColumnFilter.Text = "Filter...";
+			this.toolTip1.SetToolTip(this.txtColumnFilter, "Filter the list of tables - remember the Filter is CaSe Sensitive!");
+			this.txtColumnFilter.TextChanged += new System.EventHandler(this.txtColumnFilter_TextChanged);
+			this.txtColumnFilter.Enter += new System.EventHandler(this.txtColumnFilter_Enter);
+			this.txtColumnFilter.Leave += new System.EventHandler(this.txtColumnFilter_Leave);
+			// 
+			// ColumnsListBox
+			// 
+			this.ColumnsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ColumnsListBox.FormattingEnabled = true;
+			this.ColumnsListBox.Location = new System.Drawing.Point(3, 29);
+			this.ColumnsListBox.Name = "ColumnsListBox";
+			this.ColumnsListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.ColumnsListBox.Size = new System.Drawing.Size(125, 303);
+			this.ColumnsListBox.TabIndex = 4;
+			this.toolTip1.SetToolTip(this.ColumnsListBox, "Choose one or more tables to search");
 			// 
 			// txtResults
 			// 
@@ -305,8 +436,9 @@
 			this.txtResults.Multiline = true;
 			this.txtResults.Name = "txtResults";
 			this.txtResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.txtResults.Size = new System.Drawing.Size(516, 332);
+			this.txtResults.Size = new System.Drawing.Size(509, 332);
 			this.txtResults.TabIndex = 0;
+			this.toolTip1.SetToolTip(this.txtResults, "Search results display here and are copied to the Clipboard automatically");
 			this.txtResults.WordWrap = false;
 			// 
 			// ssStatus
@@ -318,6 +450,7 @@
 			this.ssStatus.Size = new System.Drawing.Size(802, 22);
 			this.ssStatus.TabIndex = 4;
 			this.ssStatus.Text = "statusStrip1";
+			this.toolTip1.SetToolTip(this.ssStatus, "Status Display");
 			// 
 			// tsStatusLabel
 			// 
@@ -377,26 +510,12 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
             this.openToolStripMenuItem,
             this.toolStripSeparator,
-            this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.toolStripSeparator2,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
-			// 
-			// newToolStripMenuItem
-			// 
-			this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
-			this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-			this.newToolStripMenuItem.Text = "&New";
 			// 
 			// openToolStripMenuItem
 			// 
@@ -406,6 +525,7 @@
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.openToolStripMenuItem.Text = "&Open";
+			this.openToolStripMenuItem.ToolTipText = "Open the Connections file";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.btnLoadConnections_Click);
 			// 
 			// toolStripSeparator
@@ -413,36 +533,13 @@
 			this.toolStripSeparator.Name = "toolStripSeparator";
 			this.toolStripSeparator.Size = new System.Drawing.Size(143, 6);
 			// 
-			// saveToolStripMenuItem
-			// 
-			this.saveToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripMenuItem.Image")));
-			this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-			this.saveToolStripMenuItem.Text = "&Save";
-			// 
-			// saveAsToolStripMenuItem
-			// 
-			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-			this.saveAsToolStripMenuItem.Text = "Save &As";
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
-			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.ToolTipText = "Exit the application";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -459,6 +556,7 @@
 			this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
 			this.customizeToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.customizeToolStripMenuItem.Text = "&Exclusions...";
+			this.customizeToolStripMenuItem.ToolTipText = "Open the Exclusions form";
 			this.customizeToolStripMenuItem.Click += new System.EventHandler(this.customizeToolStripMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
@@ -466,6 +564,7 @@
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.optionsToolStripMenuItem.Text = "&Options";
+			this.optionsToolStripMenuItem.ToolTipText = "View and Set Options";
 			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
 			// 
 			// connectionsToolStripMenuItem
@@ -473,6 +572,7 @@
 			this.connectionsToolStripMenuItem.Name = "connectionsToolStripMenuItem";
 			this.connectionsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.connectionsToolStripMenuItem.Text = "Connections...";
+			this.connectionsToolStripMenuItem.ToolTipText = "Open Connections Maintenance";
 			this.connectionsToolStripMenuItem.Click += new System.EventHandler(this.btnConnections_Click);
 			// 
 			// helpToolStripMenuItem
@@ -495,44 +595,6 @@
 			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
 			this.aboutToolStripMenuItem.Text = "&About...";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-			// 
-			// txtFilter
-			// 
-			this.txtFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtFilter.Location = new System.Drawing.Point(1, 3);
-			this.txtFilter.Name = "txtFilter";
-			this.txtFilter.Size = new System.Drawing.Size(161, 20);
-			this.txtFilter.TabIndex = 0;
-			this.txtFilter.Text = "Filter...";
-			this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
-			this.txtFilter.Enter += new System.EventHandler(this.txtFilter_Enter);
-			this.txtFilter.Leave += new System.EventHandler(this.txtFilter_Leave);
-			// 
-			// rdoStartsWith
-			// 
-			this.rdoStartsWith.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.rdoStartsWith.AutoSize = true;
-			this.rdoStartsWith.Checked = true;
-			this.rdoStartsWith.Location = new System.Drawing.Point(164, 5);
-			this.rdoStartsWith.Name = "rdoStartsWith";
-			this.rdoStartsWith.Size = new System.Drawing.Size(43, 17);
-			this.rdoStartsWith.TabIndex = 1;
-			this.rdoStartsWith.TabStop = true;
-			this.rdoStartsWith.Text = "SW";
-			this.rdoStartsWith.UseVisualStyleBackColor = true;
-			// 
-			// rdoContains
-			// 
-			this.rdoContains.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.rdoContains.AutoSize = true;
-			this.rdoContains.Location = new System.Drawing.Point(212, 5);
-			this.rdoContains.Name = "rdoContains";
-			this.rdoContains.Size = new System.Drawing.Size(41, 17);
-			this.rdoContains.TabIndex = 2;
-			this.rdoContains.TabStop = true;
-			this.rdoContains.Text = "Cnt";
-			this.rdoContains.UseVisualStyleBackColor = true;
 			// 
 			// MainForm
 			// 
@@ -557,11 +619,16 @@
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
-			this.splitContainer2.Panel1.PerformLayout();
 			this.splitContainer2.Panel2.ResumeLayout(false);
 			this.splitContainer2.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
+			this.splitContainer3.Panel1.ResumeLayout(false);
+			this.splitContainer3.Panel1.PerformLayout();
+			this.splitContainer3.Panel2.ResumeLayout(false);
+			this.splitContainer3.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+			this.splitContainer3.ResumeLayout(false);
 			this.ssStatus.ResumeLayout(false);
 			this.ssStatus.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
@@ -580,7 +647,6 @@
 		private System.Windows.Forms.Button btnSearch;
 		private System.Windows.Forms.Label lblColumnName;
 		private System.Windows.Forms.Label lblTableName;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtResults;
 		private System.Windows.Forms.CheckBox chkRecordCountsOnly;
 		private System.Windows.Forms.RadioButton rdoStringSearch;
@@ -598,13 +664,8 @@
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
@@ -616,6 +677,12 @@
 		private System.Windows.Forms.TextBox txtFilter;
 		private System.Windows.Forms.RadioButton rdoContains;
 		private System.Windows.Forms.RadioButton rdoStartsWith;
+		private System.Windows.Forms.SplitContainer splitContainer3;
+		private System.Windows.Forms.RadioButton rdoColumnContains;
+		private System.Windows.Forms.RadioButton rdoColumnStartsWith;
+		private System.Windows.Forms.TextBox txtColumnFilter;
+		private System.Windows.Forms.ListBox ColumnsListBox;
+		private System.Windows.Forms.Button btnShowColumns;
 	}
 }
 
