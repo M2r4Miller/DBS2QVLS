@@ -94,7 +94,21 @@ namespace DBS
 		/// </example>
 		private void BuildSelectStrings()
 		{
-			DataRow[] stringRows = dbUtils.SchemaDataSet.Tables["TableColumns"].Select("DATA_TYPE " + (searchParams.IsNumeric ? "NOT" : "") + " like '%char%'", "TABLE_NAME ASC");
+			
+			// Consider columns only if some columns are passed in
+			bool considerColumns = searchParams.ColumnNames.Count != 0;
+			string selectedColumns = string.Empty;
+			string selectString = "DATA_TYPE " + (searchParams.IsNumeric ? "NOT" : "") + " like '%char%'";
+			if (considerColumns)
+			{
+				foreach (ColumnItem item in searchParams.ColumnNames)
+				{
+					selectedColumns += "'" + item.ColumnName + "',";
+				}
+				selectedColumns = selectedColumns.Remove(selectedColumns.LastIndexOf(','), 1);
+				selectString += " AND COLUMN_NAME IN (" + selectedColumns + ")";
+			}
+			DataRow[] stringRows = dbUtils.SchemaDataSet.Tables["TableColumns"].Select(selectString, "TABLE_NAME ASC");
 
 			queryStrings = new List<SearchItem>();
 			StringBuilder sb = new StringBuilder();
@@ -173,7 +187,7 @@ namespace DBS
 				columns = "";
 			}
 		}
-		
+
 		/// <summary>
 		/// Builds SQL SELECT strings that will search all appropriate fields in each selected table for non-NULL values
 		/// Note this routine builds one SQL SELECT for each column in the table which means for a table like 
@@ -256,7 +270,7 @@ namespace DBS
 
 		private void SetStatus(string t)
 		{
-			((StatusStrip)mainForm.Controls["ssStatus"]).Items[0].Text = t;
+			((StatusStrip) mainForm.Controls["ssStatus"]).Items[0].Text = t;
 			((StatusStrip) mainForm.Controls["ssStatus"]).Refresh();
 		}
 
